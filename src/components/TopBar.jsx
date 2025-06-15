@@ -1,8 +1,10 @@
-import { AppBar, Toolbar, IconButton, Typography, useTheme } from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
+import { AppBar, Toolbar, IconButton, Typography, useTheme } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+
+const drawerWidth = 240; // ¡Asegúrate de definir esta variable!
 
 const TopBar = ({ handleDrawerToggle }) => {
-  const theme = useTheme()
+  const theme = useTheme();
   
   return (
     <AppBar
@@ -28,7 +30,7 @@ const TopBar = ({ handleDrawerToggle }) => {
         </Typography>
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default TopBar
+export default TopBar;

@@ -5,8 +5,8 @@ import {
   Typography, 
   Button, 
   IconButton,
-  useTheme,
-  Box // Añade Box aquí con los demás imports de MUI
+  Box,
+  CssBaseline
 } from '@mui/material';
 import { 
   Brightness4 as DarkModeIcon,
@@ -14,6 +14,7 @@ import {
   Menu as MenuIcon
 } from '@mui/icons-material';
 import { Routes, Route } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Layout from './components/Layout';
 import { NotificationProvider, NotificationButton } from './components/Notification';
 import Dashboard from './pages/Dashboard';
@@ -21,47 +22,53 @@ import Products from './pages/Products';
 import Messages from './pages/Messages';
 import Settings from './pages/Settings';
 
+// Configuración del tema
+const getDesignTokens = (mode) => ({
+  palette: {
+    mode,
+    ...(mode === 'light'
+      ? {
+          primary: { main: '#1976d2' },
+          secondary: { main: '#dc004e' },
+        }
+      : {
+          primary: { main: '#90caf9' },
+          secondary: { main: '#f48fb1' },
+          background: { default: '#121212', paper: '#1e1e1e' },
+        }),
+  },
+});
+
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const theme = useTheme();
+  const theme = createTheme(getDesignTokens(darkMode ? 'dark' : 'light'));
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
 
   return (
-    <NotificationProvider>
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              edge="start"
-              sx={{ mr: 2, display: { sm: 'none' } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Mi App con Material UI
-            </Typography>
-            <IconButton color="inherit" onClick={toggleDarkMode}>
-              {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
-            </IconButton>
-            <NotificationButton />
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
-
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="products" element={<Products />} />
-            <Route path="messages" element={<Messages />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-        </Routes>
-      </Box>
-    </NotificationProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <NotificationProvider>
+        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+          {/* AppBar movido al Layout para mejor organización */}
+          
+          <Routes>
+            <Route path="/" element={<Layout darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}>
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<Products />} />
+              <Route path="messages" element={<Messages />} />
+              <Route path="settings" element={<Settings />} />
+              
+              {/* Rutas para submenús */}
+              <Route path="products/categories" element={<div>Categorías</div>} />
+              <Route path="settings/profile" element={<div>Perfil</div>} />
+            </Route>
+          </Routes>
+        </Box>
+      </NotificationProvider>
+    </ThemeProvider>
   );
 }
 
